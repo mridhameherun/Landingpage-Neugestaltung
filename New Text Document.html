@@ -1,0 +1,2842 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X1 Quiz Show — Das ganze Kino spielt mit</title>
+  <meta name="description"
+    content="X1 ist die erste Quizshow der Welt, bei der das ganze Kino mitspielt. 10 Fragen, 10 Sekunden, 1.000.000 € Preispool. Jeden Donnerstag, 20:00 Uhr.">
+  <meta name="theme-color" content="#050507">
+  <meta property="og:title" content="X1 Quiz Show — Das ganze Kino spielt mit">
+  <meta property="og:description"
+    content="Die erste Live-Quizshow im Kino. 10 Fragen, 10 Sekunden, 1 Mio. € Preispool.">
+  <meta property="og:type" content="website">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050507'/%3E%3Ctext x='32' y='43' font-family='Arial Black,Arial' font-size='26' font-style='italic' font-weight='900' fill='%23fff' text-anchor='middle'%3EX1%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050507;
+      --surface: #0b0b0f;
+      --line: rgba(255, 255, 255, .08);
+      --text: #f5f5f7;
+      --muted: rgba(245, 245, 247, .55);
+      --accent: #4da3ff;
+      --bad: #ff4d5e;
+      --font: 'Archivo', sans-serif;
+      --ease: cubic-bezier(.22, .61, .21, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    /* overflow-x auf html (nicht body!): position:sticky bleibt so funktionsfähig */
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+      overflow-x: hidden
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #001220
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    section {
+      scroll-margin-top: 96px
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto
+    }
+
+    video[data-video] {
+      background: #07070b
+    }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: 1rem 1.9rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .95rem;
+      letter-spacing: .02em;
+      transition: transform .25s var(--ease), background .25s, border-color .25s, color .25s;
+      border: 1px solid transparent;
+      white-space: nowrap
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #050507
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #e9edf2
+    }
+
+    .btn-ghost {
+      border-color: rgba(255, 255, 255, .25);
+      color: #fff;
+      background: rgba(255, 255, 255, .04);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px)
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255, 255, 255, .6);
+      transform: translateY(-2px)
+    }
+
+    .btn:active {
+      transform: scale(.97)
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px
+    }
+
+    /* ---------- Nav ---------- */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px clamp(20px, 4vw, 48px);
+      transition: transform .35s var(--ease), background .35s, border-color .35s;
+      border-bottom: 1px solid transparent
+    }
+
+    .nav.scrolled {
+      background: rgba(5, 5, 7, .72);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-color: var(--line)
+    }
+
+    .nav.hidden-nav {
+      transform: translateY(-100%)
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .logo-x {
+      font-style: italic;
+      font-weight: 900;
+      font-size: 1.45rem;
+      letter-spacing: -.04em
+    }
+
+    .logo-sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(255, 255, 255, .3)
+    }
+
+    .logo-t {
+      font-weight: 800;
+      font-size: .68rem;
+      letter-spacing: .3em
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 34px
+    }
+
+    .nav-links a {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color .2s;
+      background: linear-gradient(currentColor, currentColor) bottom left/0 1px no-repeat;
+      padding-bottom: 3px
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #fff;
+      background-size: 100% 1px
+    }
+
+    .nav .btn {
+      padding: .6rem 1.3rem;
+      font-size: .85rem
+    }
+
+    .burger {
+      display: none;
+      width: 40px;
+      height: 40px;
+      position: relative
+    }
+
+    .burger span {
+      position: absolute;
+      left: 9px;
+      right: 9px;
+      height: 2px;
+      background: #fff;
+      transition: .3s var(--ease)
+    }
+
+    .burger span:first-child {
+      top: 15px
+    }
+
+    .burger span:last-child {
+      bottom: 15px
+    }
+
+    .burger.open span:first-child {
+      top: 19px;
+      transform: rotate(45deg)
+    }
+
+    .burger.open span:last-child {
+      bottom: 19px;
+      transform: rotate(-45deg)
+    }
+
+    .menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 7, .96);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 9vw;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s
+    }
+
+    .menu.open {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .menu a {
+      font-size: clamp(1.8rem, 8vw, 2.8rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: .45s var(--ease);
+      transition-delay: calc(var(--i)*60ms)
+    }
+
+    .menu.open a {
+      opacity: 1;
+      transform: none
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      height: 100vh;
+      height: 100svh;
+      min-height: 640px;
+      display: flex;
+      align-items: center;
+      overflow: hidden
+    }
+
+    .hero video,
+    .finale video,
+    .vidband video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .hero video {
+      filter: brightness(.5) contrast(1.1) saturate(.85);
+      animation: heroZoom 2.6s var(--ease) both
+    }
+
+    @keyframes heroZoom {
+      from {
+        transform: scale(1.09)
+      }
+    }
+
+    .scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(5, 5, 7, .62), rgba(5, 5, 7, .18) 32%, rgba(5, 5, 7, .55) 70%, #050507 100%)
+    }
+
+    .scrim-center {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(62% 52% at 50% 52%, rgba(5, 5, 7, .45), transparent 72%)
+    }
+
+    .dust {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: .07;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 3;
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+      animation: boot 1.3s .2s both
+    }
+
+    @keyframes boot {
+      0% {
+        opacity: 0
+      }
+
+      8% {
+        opacity: .9
+      }
+
+      13% {
+        opacity: .15
+      }
+
+      22% {
+        opacity: 1
+      }
+
+      30% {
+        opacity: .55
+      }
+
+      40% {
+        opacity: 1
+      }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .32em;
+      color: var(--accent);
+      text-transform: uppercase
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: '';
+      width: 34px;
+      height: 1px;
+      background: currentColor;
+      opacity: .6
+    }
+
+    .eyebrow.l::after {
+      display: none
+    }
+
+    .hero h1 {
+      margin: 26px 0 22px;
+      font-size: clamp(2.7rem, 5vw, 7.6rem);
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      line-height: .95;
+      letter-spacing: -.025em
+    }
+
+    .hero h1 .w {
+      display: inline-block;
+      opacity: 0;
+      animation: wordUp .8s var(--ease) both;
+      animation-delay: calc(.45s + var(--i)*.09s)
+    }
+
+    @keyframes wordUp {
+      from {
+        opacity: 0;
+        transform: translateY(.55em) rotate(1.5deg)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .outline {
+      color: transparent;
+      -webkit-text-stroke: 2px #fff
+    }
+
+    .hero p.lead {
+      max-width: 540px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      font-weight: 400
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      margin-top: 36px;
+      flex-wrap: wrap
+    }
+
+    .hero-foot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+      padding-bottom: 30px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px
+    }
+
+    .ns-label {
+      display: block;
+      font-size: .72rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px
+    }
+
+    .cd {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px
+    }
+
+    .cd-g b {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      font-style: italic
+    }
+
+    .cd-g span {
+      font-size: .62rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .cd em {
+      font-style: normal;
+      color: var(--accent);
+      font-size: 1.4rem;
+      line-height: 1.6;
+      font-weight: 300
+    }
+
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-size: .62rem;
+      letter-spacing: .34em;
+      color: var(--muted)
+    }
+
+    .scroll-hint span {
+      width: 1px;
+      height: 44px;
+      background: rgba(255, 255, 255, .4);
+      animation: drop 1.9s var(--ease) infinite
+    }
+
+    @keyframes drop {
+      0% {
+        transform: scaleY(0);
+        transform-origin: top
+      }
+
+      45% {
+        transform: scaleY(1);
+        transform-origin: top
+      }
+
+      55% {
+        transform: scaleY(1);
+        transform-origin: bottom
+      }
+
+      100% {
+        transform: scaleY(0);
+        transform-origin: bottom
+      }
+    }
+
+    /* ---------- Fallback, falls ein Video fehlt/nicht ladbar ist ---------- */
+    .no-video::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(90% 120% at 75% 15%, rgba(77, 163, 255, .18), transparent 55%), radial-gradient(80% 100% at 15% 85%, rgba(77, 163, 255, .10), transparent 55%), #07070b;
+      animation: nebula 16s ease-in-out infinite alternate
+    }
+
+    @keyframes nebula {
+      to {
+        transform: scale(1.08) translateY(-2%);
+        opacity: .85
+      }
+    }
+
+    /* ---------- Marquee ---------- */
+    .marquee {
+      overflow: hidden;
+      border-block: 1px solid var(--line);
+      padding: 20px 0;
+      background: var(--bg)
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: mq 30s linear infinite
+    }
+
+    .marquee:hover .marquee-track {
+      animation-play-state: paused
+    }
+
+    .marquee-seg {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      padding-right: 30px;
+      white-space: nowrap;
+      font-weight: 700;
+      font-size: .88rem;
+      letter-spacing: .16em
+    }
+
+    .marquee-seg i {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      transform: rotate(45deg);
+      flex: none
+    }
+
+    @keyframes mq {
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* ---------- Section heads ---------- */
+    .sec {
+      padding: 150px 0
+    }
+
+    .sec-head {
+      margin-bottom: 64px
+    }
+
+    .sec-head.center {
+      text-align: center
+    }
+
+    .sec-head.center .sub {
+      margin-inline: auto
+    }
+
+    .sec-head h2 {
+      margin-top: 20px;
+      font-size: clamp(2rem, 4.6vw, 3.7rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.02;
+      letter-spacing: -.02em
+    }
+
+    .sec-head .sub {
+      margin-top: 18px;
+      max-width: 560px;
+      color: var(--muted)
+    }
+
+    /* ---------- Showcase (Trailer) ---------- */
+    .screen {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      aspect-ratio: 21/9;
+      background: #000;
+      box-shadow: 0 40px 120px -30px rgba(77, 163, 255, .14)
+    }
+
+    .screen video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.92)
+    }
+
+    .screen.no-video {
+      background: radial-gradient(90% 120% at 75% 15%, rgba(77, 163, 255, .16), transparent 55%), #07070b
+    }
+
+    .screen:hover .sv-ctl,
+    .screen:focus-within .sv-ctl {
+      opacity: 1
+    }
+
+    .sv-ctl {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      display: flex;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .sv-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(5, 5, 7, .65);
+      border: 1px solid rgba(255, 255, 255, .2);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      transition: .2s
+    }
+
+    .sv-btn:hover {
+      background: rgba(255, 255, 255, .15)
+    }
+
+    .sv-btn svg {
+      width: 18px;
+      height: 18px
+    }
+
+    .screen .cap {
+      position: absolute;
+      right: 18px;
+      bottom: 26px;
+      font-size: .68rem;
+      letter-spacing: .2em;
+      color: rgba(255, 255, 255, .55);
+      text-transform: uppercase
+    }
+
+    /* Touch-Geräte: Controls immer sichtbar (kein Hover vorhanden) */
+    @media (hover:none) {
+      .sv-ctl {
+        opacity: 1
+      }
+    }
+
+    /* ---------- Full-bleed video band ---------- */
+    .vidband {
+      position: relative;
+      height: 80vh;
+      height: 84svh;
+      min-height: 520px;
+      display: flex;
+      align-items: center;
+      overflow: hidden
+    }
+
+    .vidband video {
+      inset: -10% 0;
+      height: 120%;
+      filter: brightness(.42) contrast(1.08) saturate(.9);
+      will-change: transform
+    }
+
+    .vb-inner {
+      position: relative;
+      z-index: 3;
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+      text-align: center
+    }
+
+    .vb-quote {
+      margin-top: 26px;
+      font-size: clamp(1.7rem, 4.4vw, 3.4rem);
+      font-weight: 800;
+      font-style: italic;
+      line-height: 1.14;
+      max-width: 22ch;
+      margin-inline: auto;
+      letter-spacing: -.015em
+    }
+
+    .vb-quote .hl {
+      color: var(--accent)
+    }
+
+    .vb-sub {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: .8rem;
+      letter-spacing: .26em;
+      text-transform: uppercase
+    }
+
+    /* ---------- Steps / Phone ---------- */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+      gap: clamp(48px, 7vw, 110px);
+      align-items: start
+    }
+
+    .phone-col {
+      position: sticky;
+      top: clamp(84px, 13vh, 150px)
+    }
+
+    .phone {
+      width: min(300px, 78vw);
+      margin-inline: auto;
+      aspect-ratio: 9/19;
+      border-radius: 44px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: #08080b;
+      padding: 11px;
+      position: relative
+    }
+
+    .phone-screenwrap {
+      position: relative;
+      height: 100%;
+      border-radius: 34px;
+      overflow: hidden;
+      background: #050507;
+      border: 1px solid rgba(255, 255, 255, .07)
+    }
+
+    .phone .island {
+      position: absolute;
+      top: 23px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 22px;
+      border-radius: 20px;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, .08);
+      z-index: 6
+    }
+
+    .pscreen {
+      position: absolute;
+      inset: 0;
+      padding: 60px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: scale(.97) translateY(10px);
+      transition: .55s var(--ease);
+      pointer-events: none
+    }
+
+    .pscreen.active {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto
+    }
+
+    .ps-brand {
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .3em;
+      color: var(--accent)
+    }
+
+    .ps-brand b {
+      font-style: italic;
+      font-size: .85rem;
+      letter-spacing: -.02em;
+      color: #fff;
+      margin-right: 8px
+    }
+
+    .ps-row {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline
+    }
+
+    .ps-row span {
+      font-size: .62rem;
+      letter-spacing: .18em;
+      color: var(--muted);
+      text-transform: uppercase
+    }
+
+    .ps-row b {
+      font-size: .82rem;
+      font-weight: 700;
+      text-align: right
+    }
+
+    .barcode {
+      margin: 22px auto 8px;
+      width: 72%;
+      height: 44px;
+      background: repeating-linear-gradient(90deg, #e8e8ee 0 2px, transparent 2px 5px, #e8e8ee 5px 6px, transparent 6px 11px)
+    }
+
+    .ps-code {
+      text-align: center;
+      font-size: .72rem;
+      letter-spacing: .34em;
+      color: var(--muted)
+    }
+
+    .scan-title {
+      text-align: center;
+      font-size: .62rem;
+      letter-spacing: .26em;
+      color: var(--muted);
+      margin: 8px 0 26px
+    }
+
+    .scanframe {
+      width: 148px;
+      height: 148px;
+      margin: 0 auto;
+      position: relative
+    }
+
+    .scanframe::before,
+    .scanframe::after,
+    .scanframe i::before,
+    .scanframe i::after {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 2px solid var(--accent)
+    }
+
+    .scanframe::before {
+      top: 0;
+      left: 0;
+      border-right: none;
+      border-bottom: none
+    }
+
+    .scanframe::after {
+      top: 0;
+      right: 0;
+      border-left: none;
+      border-bottom: none
+    }
+
+    .scanframe i::before {
+      bottom: 0;
+      left: 0;
+      border-right: none;
+      border-top: none
+    }
+
+    .scanframe i::after {
+      bottom: 0;
+      right: 0;
+      border-left: none;
+      border-top: none
+    }
+
+    .scanline {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 8%;
+      height: 2px;
+      background: var(--accent);
+      opacity: 0
+    }
+
+    .pscreen.active .scanline {
+      opacity: 1;
+      animation: scan 1.7s ease-in-out infinite alternate
+    }
+
+    @keyframes scan {
+      to {
+        top: 88%
+      }
+    }
+
+    .scan-hint {
+      text-align: center;
+      color: var(--muted);
+      font-size: .78rem;
+      margin-top: 28px;
+      max-width: 200px;
+      align-self: center
+    }
+
+    .pill {
+      margin-top: auto;
+      align-self: center;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(77, 163, 255, .4);
+      font-size: .66rem;
+      letter-spacing: .2em;
+      color: var(--accent);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: .4s .3s
+    }
+
+    .pscreen.active .pill {
+      opacity: 1;
+      transform: none
+    }
+
+    .pill i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.4s infinite
+    }
+
+    @keyframes pulse {
+      50% {
+        transform: scale(1.7);
+        opacity: .5
+      }
+    }
+
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: .62rem;
+      letter-spacing: .2em;
+      color: var(--muted);
+      margin-bottom: 6px
+    }
+
+    .q-track {
+      height: 3px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .q-track i {
+      display: block;
+      height: 100%;
+      width: 42%;
+      background: var(--accent)
+    }
+
+    .ph-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 18px 0;
+      text-align: center
+    }
+
+    .ph-stats div {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 4px
+    }
+
+    .ph-stats span {
+      display: block;
+      font-size: .56rem;
+      letter-spacing: .2em;
+      color: var(--muted)
+    }
+
+    .ph-stats b {
+      font-size: 1.15rem;
+      font-weight: 800;
+      font-style: italic;
+      font-variant-numeric: tabular-nums
+    }
+
+    .ph-stats b.bump {
+      animation: bump .5s;
+      color: var(--accent)
+    }
+
+    @keyframes bump {
+      40% {
+        transform: scale(1.25)
+      }
+    }
+
+    .ph-q {
+      font-size: .86rem;
+      font-weight: 700;
+      line-height: 1.35;
+      min-height: 2.6em
+    }
+
+    .ph-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: .8rem;
+      font-weight: 600;
+      margin-top: 8px;
+      transition: .35s
+    }
+
+    .ph-opt em {
+      font-style: normal;
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: .62rem;
+      color: var(--muted)
+    }
+
+    .ph-opt .ck {
+      margin-left: auto;
+      width: 15px;
+      height: 15px;
+      color: var(--accent);
+      opacity: 0;
+      transform: scale(.5);
+      transition: .3s
+    }
+
+    .ph-opt.picked {
+      border-color: var(--accent);
+      background: rgba(77, 163, 255, .1)
+    }
+
+    .ph-opt.done .ck {
+      opacity: 1;
+      transform: scale(1)
+    }
+
+    .step {
+      padding: 54px 0;
+      border-top: 1px solid var(--line);
+      opacity: .32;
+      transition: opacity .5s var(--ease)
+    }
+
+    .step.active {
+      opacity: 1
+    }
+
+    .step-num {
+      font-size: 56px;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, .28);
+      transition: .4s
+    }
+
+    .step.active .step-num {
+      -webkit-text-stroke: 1px var(--accent)
+    }
+
+    .step h3 {
+      margin: 18px 0 10px;
+      font-size: 1.45rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .01em
+    }
+
+    .step p {
+      color: var(--muted);
+      max-width: 46ch
+    }
+
+    /* ---------- Quiz ---------- */
+    .quiz-card {
+      position: relative;
+      max-width: 780px;
+      margin-inline: auto;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, .03);
+      padding: clamp(26px, 5vw, 54px);
+      overflow: hidden
+    }
+
+    .quiz-card.shake {
+      animation: shake .5s
+    }
+
+    @keyframes shake {
+
+      10%,
+      90% {
+        transform: translateX(-2px)
+      }
+
+      20%,
+      80% {
+        transform: translateX(4px)
+      }
+
+      30%,
+      50%,
+      70% {
+        transform: translateX(-7px)
+      }
+
+      40%,
+      60% {
+        transform: translateX(7px)
+      }
+    }
+
+    .q-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px
+    }
+
+    .q-tag {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .28em;
+      color: var(--muted)
+    }
+
+    .q-sec {
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums
+    }
+
+    .q-bar {
+      height: 3px;
+      background: rgba(255, 255, 255, .1);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .q-bar i {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      transform-origin: left;
+      transform: scaleX(1);
+      transition: transform .1s linear
+    }
+
+    .q-bar i.low {
+      background: var(--bad)
+    }
+
+    #qText {
+      margin-top: 26px;
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      font-weight: 800;
+      line-height: 1.15
+    }
+
+    .tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      margin-top: 30px
+    }
+
+    .tile {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      padding: 19px 18px;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .02);
+      font-weight: 600;
+      font-size: 1.02rem;
+      overflow: hidden;
+      transition: transform .2s var(--ease), border-color .2s, opacity .3s, background .3s
+    }
+
+    .tile:not(:disabled):hover {
+      border-color: rgba(255, 255, 255, .45);
+      transform: translateY(-2px)
+    }
+
+    .tile .key {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      display: grid;
+      place-items: center;
+      font-size: .78rem;
+      color: var(--muted);
+      transition: .25s
+    }
+
+    .tile .pct {
+      margin-left: auto;
+      font-size: .85rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      opacity: 0;
+      transition: opacity .4s .55s
+    }
+
+    .tile .pct.show {
+      opacity: 1
+    }
+
+    .tile .fill {
+      position: absolute;
+      inset: 0;
+      background: rgba(77, 163, 255, .1);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .9s var(--ease)
+    }
+
+    .tile.correct {
+      border-color: var(--accent);
+      background: rgba(77, 163, 255, .12)
+    }
+
+    .tile.correct .key {
+      background: var(--accent);
+      border-color: transparent;
+      color: #001220
+    }
+
+    .tile.wrong {
+      border-color: var(--bad);
+      background: rgba(255, 77, 94, .09)
+    }
+
+    .tile.dim {
+      opacity: .4
+    }
+
+    .quiz-feed {
+      min-height: 26px;
+      margin-top: 24px;
+      font-weight: 600
+    }
+
+    .quiz-feed.good {
+      color: var(--accent)
+    }
+
+    .quiz-feed.bad {
+      color: #ff6b78
+    }
+
+    .quiz-after {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end
+    }
+
+    .quiz-note {
+      max-width: 780px;
+      margin: 18px auto 0;
+      text-align: center;
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .end {
+      text-align: center;
+      padding: 20px 0
+    }
+
+    .end-big {
+      font-size: clamp(3rem, 9vw, 5.5rem);
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -.02em;
+      margin: 14px 0
+    }
+
+    .end p {
+      color: var(--muted);
+      max-width: 44ch;
+      margin: 0 auto 30px
+    }
+
+    .spark {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 4
+    }
+
+    /* ---------- Prize ---------- */
+    .money-wrap {
+      text-align: center
+    }
+
+    .money {
+      font-size: clamp(3.2rem, 11.5vw, 9.2rem);
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      margin-top: 30px
+    }
+
+    .money .cur {
+      font-size: .42em;
+      vertical-align: .72em;
+      margin-left: .08em;
+      color: var(--accent)
+    }
+
+    .breakdown {
+      max-width: 680px;
+      margin: 70px auto 0
+    }
+
+    .bd-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 20px;
+      padding: 22px 0 18px;
+      border-top: 1px solid var(--line)
+    }
+
+    .bd-row b {
+      font-weight: 700
+    }
+
+    .bd-row span {
+      grid-row: 2;
+      font-size: .85rem;
+      color: var(--muted)
+    }
+
+    .bd-row .val {
+      grid-row: 1/3;
+      align-self: center;
+      font-weight: 800;
+      font-style: italic;
+      font-variant-numeric: tabular-nums;
+      font-size: 1.15rem
+    }
+
+    .bar {
+      grid-column: 1/3;
+      grid-row: 3;
+      height: 2px;
+      background: rgba(255, 255, 255, .09);
+      margin-top: 14px
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1.2s var(--ease)
+    }
+
+    .bd-note {
+      margin-top: 16px;
+      font-size: .75rem;
+      color: var(--muted)
+    }
+
+    /* ---------- Dates ---------- */
+    .dates {
+      border-top: 1px solid var(--line)
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 1fr auto;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      text-align: left;
+      padding: 26px 10px;
+      border-bottom: 1px solid var(--line);
+      transition: background .25s
+    }
+
+    .date-row:hover {
+      background: rgba(255, 255, 255, .03)
+    }
+
+    .d-date {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      color: var(--muted)
+    }
+
+    .d-city {
+      font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-style: italic
+    }
+
+    .d-venue {
+      color: var(--muted);
+      font-size: .95rem
+    }
+
+    .d-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .2);
+      display: grid;
+      place-items: center;
+      transition: .3s var(--ease)
+    }
+
+    .date-row:hover .d-arrow {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #001220;
+      transform: translateX(4px)
+    }
+
+    .d-arrow svg {
+      width: 16px;
+      height: 16px
+    }
+
+    /* ---------- Finale / Footer ---------- */
+    .finale {
+      position: relative;
+      height: 92vh;
+      height: 92svh;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center
+    }
+
+    .finale video {
+      filter: brightness(.42) contrast(1.1) saturate(.85)
+    }
+
+    .finale .z {
+      position: relative;
+      z-index: 3;
+      width: min(900px, calc(100% - 48px))
+    }
+
+    .finale h2 {
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: -.025em;
+      line-height: .95;
+      margin: 22px 0 34px
+    }
+
+    .finale .small {
+      margin-top: 22px;
+      font-size: .8rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 70px 0 40px
+    }
+
+    .foot-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 48px;
+      flex-wrap: wrap
+    }
+
+    .foot-brand p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .9rem;
+      max-width: 30ch
+    }
+
+    .foot-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .foot-nav button {
+      width: max-content;
+      color: var(--muted);
+      font-size: .92rem;
+      transition: color .2s;
+      padding: 0
+    }
+
+    .foot-nav button:hover {
+      color: #fff
+    }
+
+    .foot-bottom {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: .78rem;
+      color: var(--muted)
+    }
+
+    #toTop {
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color .2s
+    }
+
+    #toTop:hover {
+      color: #fff
+    }
+
+    #toTop svg {
+      width: 14px;
+      height: 14px;
+      transform: rotate(-90deg)
+    }
+
+    /* ---------- Modal & Toast ---------- */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(0, 0, 0, .72);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+
+    .backdrop.open {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      background: #0c0c11;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 24px;
+      padding: 34px;
+      transform: translateY(16px) scale(.98);
+      transition: .35s var(--ease);
+      max-height: 88vh;
+      overflow: auto
+    }
+
+    .backdrop.open .modal {
+      transform: none
+    }
+
+    .modal.wide {
+      width: min(960px, 100%);
+      padding: 0;
+      background: #000;
+      overflow: hidden
+    }
+
+    .modal h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-style: italic;
+      margin: 10px 0 6px
+    }
+
+    .modal-p {
+      color: var(--muted);
+      margin-top: 10px
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .18);
+      display: grid;
+      place-items: center;
+      transition: .2s;
+      z-index: 5
+    }
+
+    .modal-wrap {
+      position: relative
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, .18)
+    }
+
+    .modal-close svg {
+      width: 15px;
+      height: 15px
+    }
+
+    .modal form {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap
+    }
+
+    .modal input {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      background: rgba(255, 255, 255, .05);
+      color: #fff;
+      font: inherit
+    }
+
+    .modal input:focus {
+      outline: none;
+      border-color: var(--accent)
+    }
+
+    .modal input.err {
+      border-color: var(--bad);
+      animation: shake .4s
+    }
+
+    .form-err {
+      color: #ff6b78;
+      font-size: .85rem;
+      min-height: 1.2em;
+      margin-top: 12px
+    }
+
+    .trailer-cap {
+      padding: 14px 20px;
+      background: #0c0c11;
+      font-size: .82rem;
+      color: var(--muted);
+      letter-spacing: .06em
+    }
+
+    .success {
+      text-align: center;
+      padding: 14px 0
+    }
+
+    .success svg {
+      width: 52px;
+      height: 52px;
+      color: var(--accent);
+      margin-bottom: 14px
+    }
+
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      transform: translate(-50%, 16px);
+      z-index: 90;
+      background: #101016;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 999px;
+      padding: 13px 22px;
+      font-size: .88rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: .35s var(--ease);
+      max-width: calc(100vw - 40px);
+      text-align: center
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0)
+    }
+
+    /* ---------- Reveal ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+      transition-delay: var(--d, 0s)
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none
+    }
+
+    @media (max-width:1024px) {
+      .steps-grid {
+        grid-template-columns: 1fr
+      }
+
+      .phone-col {
+        position: static;
+        margin-bottom: 14px
+      }
+    }
+
+    @media (max-width:860px) {
+      .nav-links {
+        display: none
+      }
+
+      .burger {
+        display: block
+      }
+
+      .hero-foot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px
+      }
+
+      .scroll-hint {
+        display: none
+      }
+
+      .sec {
+        padding: 100px 0
+      }
+    }
+
+    @media (max-width:560px) {
+      .tiles {
+        grid-template-columns: 1fr
+      }
+
+      .date-row {
+        grid-template-columns: 1fr auto;
+        row-gap: 4px
+      }
+
+      .d-date {
+        grid-column: 1/3
+      }
+
+      .d-venue {
+        display: none
+      }
+
+      .cd em {
+        display: none
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important
+      }
+
+      html {
+        scroll-behavior: auto
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none
+      }
+
+      .marquee-track {
+        animation: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======== NAVIGATION ======== -->
+  <header class="nav" id="nav">
+    <a class="logo" href="#top" aria-label="X1 Quiz Show — Start">
+      <span class="logo-x">X1</span><span class="logo-sep"></span><span class="logo-t">QUIZ SHOW</span>
+    </a>
+    <nav class="nav-links" aria-label="Hauptnavigation">
+      <a href="#trailer">Trailer</a>
+      <a href="#ablauf">Ablauf</a>
+      <a href="#kino">Kino</a>
+      <a href="#spiel">Spiel</a>
+      <a href="#preise">Preise</a>
+      <a href="#termine">Termine</a>
+      <button class="btn btn-primary js-ticket" data-city="">Tickets</button>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menü öffnen"
+      aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <div class="menu" id="menuOverlay">
+    <a href="#trailer" style="--i:0">Trailer</a>
+    <a href="#ablauf" style="--i:1">Ablauf</a>
+    <a href="#kino" style="--i:2">Kino</a>
+    <a href="#spiel" style="--i:3">Spiel</a>
+    <a href="#preise" style="--i:4">Preise</a>
+    <a href="#termine" style="--i:5">Termine</a>
+    <a href="#" class="js-ticket" data-city="" style="--i:6">Tickets</a>
+  </div>
+
+  <main>
+    <!-- ======== HERO — Hintergrund-Video ======== -->
+    <section class="hero" id="top">
+      <!-- Video-Datei wird zentral im <script> unten (VIDEO_FILES.hero) gesetzt -->
+      <video data-video="hero" muted loop playsinline preload="auto" aria-hidden="true"></video>
+      <div class="scrim"></div>
+      <div class="scrim-center"></div>
+      <canvas class="dust" aria-hidden="true"></canvas>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <span class="eyebrow l">Das neue Live-Event im Kino</span>
+        <h1>
+          <span class="w" style="--i:0">Das</span> <span class="w" style="--i:1">ganze</span> <span class="w"
+            style="--i:2">Kino</span><br>
+          <span class="w" style="--i:3">spielt</span> <span class="w outline" style="--i:4">mit.</span>
+        </h1>
+        <p class="lead">X1 ist die erste Quizshow der Welt, bei der alle im Saal gleichzeitig mitspielen — live, auf der
+          großen Leinwand, um Preise im Gesamtwert von 1.000.000&nbsp;€.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary js-ticket" data-city="">Tickets sichern</button>
+          <button class="btn btn-ghost js-trailer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Trailer ansehen
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-foot">
+        <div class="next-show">
+          <span class="ns-label">Nächste Show · <span id="showDate">Do</span> · 20:00 Uhr</span>
+          <div class="cd" role="timer" aria-label="Countdown zur nächsten Show">
+            <div class="cd-g"><b id="cdD">00</b><span>Tage</span></div><em>:</em>
+            <div class="cd-g"><b id="cdH">00</b><span>Std</span></div><em>:</em>
+            <div class="cd-g"><b id="cdM">00</b><span>Min</span></div><em>:</em>
+            <div class="cd-g"><b id="cdS">00</b><span>Sek</span></div>
+          </div>
+        </div>
+        <a class="scroll-hint" href="#trailer" aria-label="Nach unten scrollen"><span></span>SCROLL</a>
+      </div>
+    </section>
+
+    <!-- ======== MARQUEE ======== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-seg"><span>DAS GANZE KINO SPIELT MIT</span><i></i><span>1.000.000 €
+            PREISE</span><i></i><span>JEDEN DONNERSTAG · 20:00 UHR</span><i></i><span>10 FRAGEN · 10
+            SEKUNDEN</span><i></i><span>LIVE IN DEINEM KINO</span><i></i></div>
+        <div class="marquee-seg"><span>DAS GANZE KINO SPIELT MIT</span><i></i><span>1.000.000 €
+            PREISE</span><i></i><span>JEDEN DONNERSTAG · 20:00 UHR</span><i></i><span>10 FRAGEN · 10
+            SEKUNDEN</span><i></i><span>LIVE IN DEINEM KINO</span><i></i></div>
+      </div>
+    </div>
+
+    <!-- ======== SHOWCASE — Trailer ======== -->
+    <section class="sec" id="trailer">
+      <div class="container">
+        <div class="sec-head center reveal">
+          <span class="eyebrow">Der Spot</span>
+          <h2>Das ist X1.</h2>
+          <p class="sub">Zehn Fragen. Zehn Sekunden. Ein ganzer Saal, der mit dir zittert. Gefilmt in echten Kinos —
+            ohne Schauspieler, nur Spieler.</p>
+        </div>
+        <div class="screen reveal" style="--d:.1s">
+          <!-- Video-Datei: VIDEO_FILES.trailer (unten im <script>) -->
+          <video id="showVideo" data-video="trailer" data-rate="1" muted loop playsinline preload="metadata"></video>
+          <div class="sv-ctl">
+            <button class="sv-btn" id="svPlay" aria-label="Play / Pause">
+              <svg id="icPlay" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <svg id="icPause" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+                <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
+              </svg>
+            </button>
+            <button class="sv-btn" id="svMute" aria-label="Ton an / aus">
+              <svg id="icSoundOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none" />
+                <path d="M17 9l4 6M21 9l-4 6" />
+              </svg>
+              <svg id="icSoundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" style="display:none">
+                <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none" />
+                <path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" />
+              </svg>
+            </button>
+          </div>
+          <span class="cap">X1 — Offizieller Trailer</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== STEPS — sticky phone scrollytelling ======== -->
+    <section class="sec" id="ablauf" style="padding-top:40px">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow l">So funktioniert's</span>
+          <h2>Vom Ticket<br>zum Jackpot.</h2>
+          <p class="sub">Alles, was du wissen musst, um beim nächsten Showtag ganz vorne mitzuspielen.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="phone-col reveal">
+            <div class="phone">
+              <span class="island"></span>
+              <div class="phone-screenwrap">
+                <!-- Screen 1: Ticket -->
+                <div class="pscreen active" data-screen="1">
+                  <p class="ps-brand"><b>X1</b>STREAM</p>
+                  <div style="margin-top:20px">
+                    <div class="ps-row"><span>Datum</span><b>Do · 26.06 · 20:00</b></div>
+                    <div class="ps-row"><span>Kino</span><b>Astor Film Lounge</b></div>
+                    <div class="ps-row"><span>Platz</span><b>Saal 4 · Reihe F · Pl. 12</b></div>
+                  </div>
+                  <div class="barcode"></div>
+                  <p class="ps-code">8F3-KX1-042</p>
+                </div>
+                <!-- Screen 2: Scan -->
+                <div class="pscreen" data-screen="2">
+                  <p class="ps-brand"><b>X1</b>STREAM</p>
+                  <p class="scan-title">SAAL-CODE</p>
+                  <div class="scanframe"><i></i><span class="scanline"></span></div>
+                  <p class="scan-hint">Richte die Kamera auf den Code an deinem Sitzplatz.</p>
+                  <span class="pill"><i></i>VERBUNDEN · SAAL 4</span>
+                </div>
+                <!-- Screen 3: Live -->
+                <div class="pscreen" data-screen="3">
+                  <p class="ps-brand"><b>X1</b>STREAM</p>
+                  <div style="margin-top:14px">
+                    <div class="q-meta"><span>FRAGE 7/10</span><span>LIVE</span></div>
+                    <div class="q-track"><i></i></div>
+                  </div>
+                  <div class="ph-stats">
+                    <div><span>Punkte</span><b id="phScore">742</b></div>
+                    <div><span>Rang</span><b id="phRank">#12</b></div>
+                    <div><span>Serie</span><b id="phStreak">5</b></div>
+                  </div>
+                  <p class="ph-q">Welche dieser Marken ist ein Autohersteller?</p>
+                  <div class="ph-opt"><em>A</em>März</div>
+                  <div class="ph-opt" id="phOptJaguar"><em>B</em>Jaguar
+                    <svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                      stroke-linecap="round">
+                      <path d="M5 12l5 5L20 7" />
+                    </svg>
+                  </div>
+                  <div class="ph-opt"><em>C</em>Dräger</div>
+                  <div class="ph-opt"><em>D</em>Gold</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps-list">
+            <div class="step active" data-step="1">
+              <div class="step-num">01</div>
+              <h3>Ticket sichern</h3>
+              <p>Wähle Datum und Kino. Dein Ticket enthält deinen persönlichen Spiel-Code für den Abend — Plätze sind
+                begrenzt, der Saal spielt vollständig mit.</p>
+            </div>
+            <div class="step" data-step="2">
+              <div class="step-num">02</div>
+              <h3>App verbinden</h3>
+              <p>Vor Showbeginn öffnest du X1 Stream auf dem Smartphone und scannst den Saal-Code. Dein Handy wird zum
+                Antwort-Controller — ohne Downloads vor Ort, ohne Papier, ohne Zettel.</p>
+            </div>
+            <div class="step" data-step="3">
+              <div class="step-num">03</div>
+              <h3>Live mitspielen</h3>
+              <p>Zehn Fragen auf der Leinwand, zehn Sekunden Zeit pro Frage. Je schneller du richtig liegst, desto mehr
+                Punkte. Wer am Ende vorne liegt, verlässt das Kino als Gewinner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIDEO-BAND — Kino-Feeling ======== -->
+    <section class="vidband" id="kino">
+      <!-- Video-Datei: VIDEO_FILES.kino (unten im <script>), mit Parallax -->
+      <video class="video-bg" autoplay muted loop playsinline>
+        <source src="Video 02 NEW SOUND.mp4" type="video/mp4">
+      </video>
+      <div class="scrim"></div>
+      <canvas class="dust" aria-hidden="true"></canvas>
+      <div class="grain" aria-hidden="true"></div>
+      <div class="vb-inner">
+        <span class="eyebrow" style="justify-content:center">Das Kino-Feeling</span>
+        <p class="vb-quote reveal">„Als die erste Frage fiel, hat <span class="hl">der ganze Saal</span> geschrien."</p>
+        <p class="vb-sub reveal" style="--d:.15s">Echte Shows · Echtes Publikum · Keine Schauspieler</p>
+      </div>
+    </section>
+
+    <!-- ======== INTERAKTIVES QUIZ ======== -->
+    <section class="sec" id="spiel">
+      <div class="container">
+        <div class="sec-head center reveal">
+          <span class="eyebrow">Probier's aus</span>
+          <h2>Fühl, wie sich X1 anfühlt.</h2>
+          <p class="sub">Eine echte Frage, echte zehn Sekunden. Im Kino spielen hunderte Spieler gleichzeitig — hier
+            spielst du gegen die Uhr.</p>
+        </div>
+
+        <div class="quiz-card reveal" id="quizCard">
+          <div id="quizMain">
+            <div class="q-top">
+              <span class="q-tag" id="qTag">FRAGE 1/2</span>
+              <span class="q-sec" id="qSec">10,0 s</span>
+            </div>
+            <div class="q-bar"><i id="qBar"></i></div>
+            <h3 id="qText">—</h3>
+            <div class="tiles" id="tiles"></div>
+            <p class="quiz-feed" id="qFeed" aria-live="polite"></p>
+            <div class="quiz-after"><button class="btn btn-ghost hidden" id="qNext">Nächste Frage</button></div>
+          </div>
+          <div class="end hidden" id="quizEnd">
+            <span class="eyebrow" style="justify-content:center">Dein Ergebnis</span>
+            <div class="end-big" id="endScore">0 von 2</div>
+            <p id="endMsg"></p>
+            <button class="btn btn-primary" id="replay">Nochmal spielen</button>
+          </div>
+        </div>
+        <p class="quiz-note">Tipp: Die Fragen lassen sich auch mit den Tasten 1–4 spielen. Genau so spielt es sich auf
+          dem Smartphone im Kino.</p>
+      </div>
+    </section>
+
+    <!-- ======== PREISE ======== -->
+    <section class="sec" id="preise" style="padding-top:40px">
+      <div class="container money-wrap">
+        <div class="reveal">
+          <span class="eyebrow">Der Preispool</span>
+          <h2>Eine Million.<br>Jede Show.</h2>
+        </div>
+        <div class="money reveal" style="--d:.1s"><span id="money">0</span><span class="cur">€</span></div>
+        <div class="breakdown reveal" style="--d:.2s">
+          <div class="bd-row">
+            <b>Hauptgewinn — Platz 1 im Saal</b><span>Einmal pro Show, live auf der Leinwand</span><b
+              class="val">500.000 €</b>
+            <div class="bar"><i data-w="0.5"></i></div>
+          </div>
+          <div class="bd-row">
+            <b>Saal-Gewinne — Platz 2 bis 100</b><span>Verteilt auf die besten Spieler des Abends</span><b
+              class="val">350.000 €</b>
+            <div class="bar"><i data-w="0.35"></i></div>
+          </div>
+          <div class="bd-row">
+            <b>Sofort-Gewinne in den Fragen</b><span>Blitzrunden mit Sofortauszahlung ins X1 Stream-Konto</span><b
+              class="val">150.000 €</b>
+            <div class="bar"><i data-w="0.15"></i></div>
+          </div>
+          <p class="bd-note">Beispielverteilung einer X1-Show im finalen Build.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== TERMINE ======== -->
+    <section class="sec" id="termine" style="padding-top:20px">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow l">Live 2025</span>
+          <h2>Dein Kino.<br>Dein Donnerstag.</h2>
+          <p class="sub">X1 tourt jeden Donnerstag durch die großen Kinostädte. Weitere Standorte folgen.</p>
+        </div>
+        <div class="dates reveal">
+          <button class="date-row js-ticket" data-city="Berlin"><span class="d-date">DO · 26.06.</span><span
+              class="d-city">Berlin</span><span class="d-venue">Astor Film Lounge</span><span class="d-arrow"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg></span></button>
+          <button class="date-row js-ticket" data-city="Hamburg"><span class="d-date">DO · 03.07.</span><span
+              class="d-city">Hamburg</span><span class="d-venue">Abaton</span><span class="d-arrow"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg></span></button>
+          <button class="date-row js-ticket" data-city="Köln"><span class="d-date">DO · 10.07.</span><span
+              class="d-city">Köln</span><span class="d-venue">Cinedom</span><span class="d-arrow"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg></span></button>
+          <button class="date-row js-ticket" data-city="München"><span class="d-date">DO · 17.07.</span><span
+              class="d-city">München</span><span class="d-venue">Museum Lichtspiele</span><span class="d-arrow"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg></span></button>
+          <button class="date-row js-ticket" data-city="Frankfurt"><span class="d-date">DO · 24.07.</span><span
+              class="d-city">Frankfurt</span><span class="d-venue">Orfeos Erben</span><span class="d-arrow"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg></span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== FINALE — Hintergrund-Video ======== -->
+    <section class="finale">
+      <!-- Video-Datei: VIDEO_FILES.finale (unten im <script>) -->
+      <video data-video="finale" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <div class="scrim"></div>
+      <canvas class="dust" aria-hidden="true"></canvas>
+      <div class="grain" aria-hidden="true"></div>
+      <div class="z reveal">
+        <span class="eyebrow" style="justify-content:center">Jeden Donnerstag · 20:00 Uhr</span>
+        <h2>Bist du<br>bereit?</h2>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary js-ticket" data-city="">Jetzt Tickets sichern</button>
+          <button class="btn btn-ghost js-trailer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Trailer ansehen
+          </button>
+        </div>
+        <p class="small">Nächste Show: <span id="showDate2">Donnerstag</span> · 20:00 Uhr · dein Kino</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======== FOOTER ======== -->
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <a class="logo" href="#top"><span class="logo-x">X1</span><span class="logo-sep"></span><span
+              class="logo-t">QUIZ SHOW</span></a>
+          <p>Die erste Quizshow der Welt, bei der das ganze Kino mitspielt.</p>
+        </div>
+        <nav class="foot-nav" aria-label="Rechtliches">
+          <button class="js-legal" data-key="impressum">Impressum</button>
+          <button class="js-legal" data-key="agb">AGB</button>
+          <button class="js-legal" data-key="widerruf">Widerrufsrecht</button>
+          <button class="js-legal" data-key="ueber">Über uns</button>
+          <button class="js-legal" data-key="datenschutz">Datenschutz</button>
+        </nav>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2025 X1 Quiz Show. Alle Rechte vorbehalten.</span>
+        <button id="toTop">Zurück nach oben
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======== MODAL ======== -->
+  <div class="backdrop" id="backdrop" role="dialog" aria-modal="true">
+    <div class="modal-wrap" style="display:contents">
+      <button class="modal-close" id="modalClose" aria-label="Schließen"><svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg></button>
+      <div class="modal" id="modal">
+        <div id="modalInner"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      /* ============================================================
+         ▼▼▼ VIDEO-DATEIEN — NUR HIER pflegen! ▼▼▼
+         Die Dateien liegen im selben Ordner wie diese HTML-Datei.
+         Leerzeichen sind erlaubt und werden automatisch sicher kodiert.
+         Tipp: Als H.264-MP4 (AAC-Ton) exportieren — spielt überall.
+      ============================================================ */
+      const VIDEO_FILES = {
+        hero: 'Video 03 NEW SOUND 1.webm',   // Hero-Hintergrund
+        trailer: 'Video 7 NEW SOUND.webm',      // Trailer-Sektion + Trailer-Modal
+        kino: 'Video 02 NEW SOUND.webm',     // Video-Band "Kino-Feeling"
+        finale: 'Video 03 NEW SOUND 1.webm'    // Finale (gleiche Datei wie Hero = aus dem Cache; eigene Datei eintragen für Abwechslung)
+      };
+      /* ▲▲▲------------------------------------------------------▲▲▲ */
+
+      /* ---------- Helpers ---------- */
+      const $ = (s, c = document) => c.querySelector(s);
+      const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const saveData = !!(navigator.connection && navigator.connection.saveData);
+
+      /* Jedes Feature läuft isoliert: geht eins kaputt, läuft der Rest weiter. */
+      const safe = (label, fn) => { try { fn(); } catch (err) { console.warn('[X1]', label, err); } };
+      const fire = (name, detail) => dispatchEvent(new CustomEvent(name, { detail }));
+      const state = { menuOpen: false };
+
+      /* ---------- Toast ---------- */
+      let toastEl = null, toastT = null;
+      function toast(msg) {
+        if (!toastEl) { toastEl = document.createElement('div'); toastEl.id = 'toast'; document.body.appendChild(toastEl); }
+        toastEl.textContent = msg; toastEl.classList.add('show');
+        clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 4200);
+      }
+
+      /* ---------- Nav: Blur + Ausblenden beim Runterscrollen ---------- */
+      safe('nav', () => {
+        const nav = $('#nav'); if (!nav) return;
+        let lastY = scrollY;
+        addEventListener('scroll', () => {
+          const y = scrollY;
+          nav.classList.toggle('scrolled', y > 40);
+          if (y > 140 && y > lastY && !state.menuOpen) nav.classList.add('hidden-nav');
+          else nav.classList.remove('hidden-nav');
+          lastY = y;
+        }, { passive: true });
+      });
+
+      /* ---------- Mobiles Menü ---------- */
+      safe('menu', () => {
+        const menu = $('#menuOverlay'), burger = $('#burger'); if (!menu || !burger) return;
+        const set = v => {
+          state.menuOpen = v;
+          menu.classList.toggle('open', v);
+          burger.classList.toggle('open', v);
+          burger.setAttribute('aria-expanded', v);
+          document.body.style.overflow = v ? 'hidden' : '';
+          if (v) $('#nav')?.classList.remove('hidden-nav');
+        };
+        burger.addEventListener('click', () => set(!state.menuOpen));
+        $$('#menuOverlay a').forEach(a => a.addEventListener('click', () => set(false)));
+        window.__closeMenu = () => { if (state.menuOpen) set(false); };
+      });
+
+      /* ---------- Aktiven Nav-Punkt markieren ---------- */
+      safe('active-nav', () => {
+        const links = $$('.nav-links a[href^="#"]');
+        if (!links.length) return;
+        const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+        const io = new IntersectionObserver(es => es.forEach(e => {
+          if (!e.isIntersecting) return;
+          const a = map.get(e.target.id); if (!a) return;
+          links.forEach(l => l.classList.remove('active'));
+          a.classList.add('active');
+        }), { rootMargin: '-45% 0px -50% 0px' });
+        map.forEach((a, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+      });
+
+      /* ---------- Scroll-Reveals ---------- */
+      safe('reveals', () => {
+        const io = new IntersectionObserver(es => es.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        }), { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+        $$('.reveal').forEach(el => io.observe(el));
+      });
+
+      /* ---------- Countdown: nächster Donnerstag, 20:00 Uhr ---------- */
+      safe('countdown', () => {
+        const els = { d: $('#cdD'), h: $('#cdH'), m: $('#cdM'), s: $('#cdS') };
+        if (!els.d) return;
+        function nextShow() {
+          const n = new Date(), d = new Date(n); d.setHours(20, 0, 0, 0);
+          let diff = (4 - d.getDay() + 7) % 7; if (diff === 0 && d <= n) diff = 7;
+          return new Date(d.getTime() + diff * 864e5);
+        }
+        let showDate = nextShow();
+        const fmt = new Intl.DateTimeFormat('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+        const label = fmt.format(showDate);
+        const sd1 = $('#showDate'); if (sd1) sd1.textContent = label;
+        const sd2 = $('#showDate2'); if (sd2) sd2.textContent = label.split(',')[0];
+        function tick() {
+          let ms = showDate - Date.now();
+          if (ms < 0) { showDate = nextShow(); ms = showDate - Date.now(); }
+          const s = Math.floor(ms / 1000);
+          els.d.textContent = String(Math.floor(s / 86400)).padStart(2, '0');
+          els.h.textContent = String(Math.floor(s / 3600) % 24).padStart(2, '0');
+          els.m.textContent = String(Math.floor(s / 60) % 60).padStart(2, '0');
+          els.s.textContent = String(s % 60).padStart(2, '0');
+        }
+        tick(); setInterval(tick, 1000);
+      });
+
+      /* ============================================================
+         VIDEO-ENGINE (Hero, Trailer, Kino-Band, Finale)
+         - Dateien aus VIDEO_FILES, Leerzeichen automatisch kodiert
+         - Abspielen nur im Sichtbereich + Pause bei verstecktem Tab /
+           offenem Modal (Performance & Datenvolumen)
+         - Cinematic Slow-Motion (0.72×, Trailer 1×)
+         - Bei Fehler/Ladeproblem: eleganter Verlauf + Hinweis statt
+           schwarzem Loch
+         - Autoplay blockiert? Retry bei erster Nutzer-Interaktion
+         - Data-Saver aktiv? Videos gar nicht erst laden
+      ============================================================ */
+      safe('videos', () => {
+        const vids = $$('video[data-video]');
+
+        if (saveData) {
+          vids.forEach(v => {
+            const s = v.closest('section');
+            if (s) s.classList.add('no-video');
+            v.remove();
+          });
+          return;
+        }
+
+        const retries = new WeakMap();
+
+        vids.forEach(v => {
+          const key = v.dataset.video, file = VIDEO_FILES[key];
+          if (!file) { v.remove(); return; }
+          v.src = encodeURI(file);                       // "Video 03 NEW SOUND 1.mp4" -> sichere URL
+          v.playbackRate = v.dataset.rate ? +v.dataset.rate : .72;
+
+          const section = v.closest('section');
+          v.addEventListener('error', () => {            // feuert zuverlässig, weil src direkt gesetzt wird
+            v.style.display = 'none';
+            if (section) section.classList.add('no-video');
+            toast(`Video "${file}" konnte nicht geladen werden — bitte als H.264-MP4 daneben ablegen.`);
+          }, { once: true });
+
+          v._inView = false;
+          new IntersectionObserver(es => {
+            v._inView = es[0].isIntersecting;
+            if (v._inView && !reduced && !document.hidden) v.play().catch(() => { });
+            else if (!v._inView) v.pause();
+          }, { threshold: .08 }).observe(v);
+
+          const tryPlay = () => {                        // z. B. iOS Low Power Mode: nach Interaktion erneut versuchen
+            if (reduced) return;
+            v.play().catch(() => {
+              const n = (retries.get(v) || 0) + 1; retries.set(v, n);
+              if (n > 3) return;
+              ['pointerdown', 'keydown', 'touchstart'].forEach(ev =>
+                addEventListener(ev, () => tryPlay(), { once: true, passive: true }));
+            });
+          };
+          v.addEventListener('loadedmetadata', tryPlay, { once: true });
+        });
+
+        document.addEventListener('visibilitychange', () => {
+          vids.forEach(v => {
+            if (document.hidden) v.pause();
+            else if (v._inView && !reduced) v.play().catch(() => { });
+          });
+        });
+
+        /* Modal offen -> Hintergrundvideos pausieren */
+        addEventListener('x1:modal', e => {
+          vids.forEach(v => {
+            if (e.detail.open) v.pause();
+            else if (v._inView && !reduced && !document.hidden) v.play().catch(() => { });
+          });
+        });
+      });
+
+      /* ---------- Parallax auf dem Video-Band ---------- */
+      safe('parallax', () => {
+        const vb = $('#vbVideo'); if (!vb || reduced) return;
+        let ticking = false;
+        const upd = () => {
+          ticking = false;
+          const host = vb.parentElement; if (!host) return;
+          const r = host.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > innerHeight) return;
+          const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+          vb.style.transform = `translateY(${(p * 54).toFixed(1)}px)`;
+        };
+        addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+        addEventListener('resize', upd);
+        upd();
+      });
+
+      /* ---------- Projektor-Staub (Canvas) ---------- */
+      safe('dust', () => {
+        class Dust {
+          constructor(cv) {
+            this.cv = cv; this.cx = cv.getContext('2d'); if (!this.cx) return;
+            this.p = []; this.run = false;
+            this.resize(); addEventListener('resize', () => this.resize());
+            const loop = () => { this.draw(); requestAnimationFrame(loop); };
+            requestAnimationFrame(loop);
+          }
+          resize() {
+            const host = this.cv.parentElement; if (!host) return;
+            const r = host.getBoundingClientRect();
+            this.cv.width = r.width; this.cv.height = r.height;
+            const n = Math.min(90, Math.round(r.width * r.height / 22000));
+            this.p = Array.from({ length: n }, () => ({
+              x: Math.random() * r.width, y: Math.random() * r.height,
+              r: .4 + Math.random() * 1.4, vx: -.12 + Math.random() * .24,
+              vy: -.05 - Math.random() * .22, ph: Math.random() * 6.28
+            }));
+          }
+          draw() {
+            if (!this.run || reduced || document.hidden) return;
+            const c = this.cx; c.clearRect(0, 0, this.cv.width, this.cv.height);
+            for (const p of this.p) {
+              p.x += p.vx; p.y += p.vy; p.ph += .02;
+              if (p.y < -4) { p.y = this.cv.height + 4; p.x = Math.random() * this.cv.width; }
+              if (p.x < -4) p.x = this.cv.width + 4; if (p.x > this.cv.width + 4) p.x = -4;
+              c.globalAlpha = .1 + .18 * (.5 + .5 * Math.sin(p.ph));
+              c.fillStyle = '#cfe4ff'; c.beginPath(); c.arc(p.x, p.y, p.r, 0, 7); c.fill();
+            }
+            c.globalAlpha = 1;
+          }
+        }
+        $$('.dust').forEach(cv => {
+          const d = new Dust(cv);
+          new IntersectionObserver(es => d.run = es[0].isIntersecting).observe(cv);
+        });
+      });
+
+      /* ---------- Trailer: In-View-Autoplay + echte Controls ---------- */
+      safe('trailer', () => {
+        const sv = $('#showVideo'); if (!sv) return;
+        new IntersectionObserver(es => {
+          if (es[0].isIntersecting) { if (!reduced) sv.play().catch(() => { }); }
+          else sv.pause();
+        }, { threshold: .25 }).observe(sv);
+
+        const sync = () => {
+          const p = $('#icPlay'), pa = $('#icPause'), on = $('#icSoundOn'), off = $('#icSoundOff');
+          if (p) p.style.display = sv.paused ? 'block' : 'none';
+          if (pa) pa.style.display = sv.paused ? 'none' : 'block';
+          if (on) on.style.display = sv.muted ? 'none' : 'block';
+          if (off) off.style.display = sv.muted ? 'block' : 'none';
+        };
+        sv.addEventListener('play', sync); sv.addEventListener('pause', sync);
+        const tgl = () => sv.paused ? sv.play().catch(() => { }) : sv.pause();
+        $('#svPlay')?.addEventListener('click', tgl);
+        sv.addEventListener('click', tgl);
+        $('#svMute')?.addEventListener('click', () => { sv.muted = !sv.muted; });
+      });
+
+      /* ---------- Steps: sticky phone reagiert aufs Scrollen ---------- */
+      safe('steps', () => {
+        const stepEls = $$('.step'), screens = $$('.pscreen');
+        if (!stepEls.length || !screens.length) return;
+        const scoreEl = $('#phScore'), rankEl = $('#phRank'), streakEl = $('#phStreak'), jag = $('#phOptJaguar');
+        let simT = [];
+        const countTo = (el, a, b, dur = 700) => {
+          const t0 = performance.now();
+          const f = t => {
+            const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(a + (b - a) * e); if (p < 1) requestAnimationFrame(f);
+          };
+          requestAnimationFrame(f);
+        };
+        const simReset = () => {
+          simT.forEach(clearTimeout); simT = [];
+          jag?.classList.remove('picked', 'done'); rankEl?.classList.remove('bump');
+          if (scoreEl) scoreEl.textContent = '742';
+          if (rankEl) rankEl.textContent = '#12';
+          if (streakEl) streakEl.textContent = '5';
+        };
+        const simStart = () => {
+          simReset();
+          if (reduced || !jag) {
+            jag?.classList.add('picked', 'done');
+            if (scoreEl) scoreEl.textContent = '782';
+            if (rankEl) rankEl.textContent = '#9';
+            if (streakEl) streakEl.textContent = '6';
+            return;
+          }
+          simT.push(setTimeout(() => jag.classList.add('picked'), 500));
+          simT.push(setTimeout(() => {
+            jag.classList.add('done');
+            if (scoreEl) countTo(scoreEl, 742, 782);
+            if (rankEl) { rankEl.textContent = '#9'; rankEl.classList.add('bump'); }
+            if (streakEl) streakEl.textContent = '6';
+            simT.push(setTimeout(() => rankEl?.classList.remove('bump'), 600));
+          }, 1100));
+        };
+        const io = new IntersectionObserver(es => es.forEach(e => {
+          if (!e.isIntersecting) return;
+          const n = +e.target.dataset.step;
+          stepEls.forEach(s => s.classList.toggle('active', +s.dataset.step === n));
+          screens.forEach(s => s.classList.toggle('active', +s.dataset.screen === n));
+          n === 3 ? simStart() : simReset();
+        }), { rootMargin: '-42% 0px -42% 0px' });
+        stepEls.forEach(s => io.observe(s));
+      });
+
+      /* ---------- Interaktives Quiz ---------- */
+      safe('quiz', () => {
+        const qTag = $('#qTag'), qText = $('#qText'), qBar = $('#qBar'), qSec = $('#qSec'),
+          tiles = $('#tiles'), qFeed = $('#qFeed'), qNext = $('#qNext'),
+          quizMain = $('#quizMain'), quizEnd = $('#quizEnd'), card = $('#quizCard');
+        if (!card || !tiles) return;
+
+        const Q = [
+          { q: 'Wie hoch ist der Gesamtwert der Preise bei X1?', opts: ['100.000 €', '250.000 €', '1.000.000 €', '10.000.000 €'], c: 2, dist: [14, 22, 51, 13] },
+          { q: 'Wie viele Fragen gibt es pro X1-Show?', opts: ['5', '10', '15', '20'], c: 1, dist: [18, 54, 16, 12] }
+        ];
+        let qi = 0, score = 0, locked = true, timer = null, tLeft = 10, started = false, inView = false;
+
+        const draw = () => {
+          qBar.style.transform = `scaleX(${tLeft / 10})`;
+          qBar.classList.toggle('low', tLeft <= 3);
+          qSec.textContent = tLeft.toFixed(1).replace('.', ',') + ' s';
+        };
+        const stepTimer = () => { tLeft -= .1; if (tLeft <= 0) { tLeft = 0; draw(); clearInterval(timer); timeout(); } else draw(); };
+
+        function renderQ() {
+          locked = false; const q = Q[qi];
+          qTag.textContent = `FRAGE ${qi + 1}/${Q.length}`; qText.textContent = q.q;
+          qBar.style.transform = 'scaleX(1)'; qBar.classList.remove('low');
+          qSec.textContent = '10,0 s'; qFeed.textContent = ''; qNext.classList.add('hidden');
+          tiles.innerHTML = '';
+          q.opts.forEach((o, i) => {
+            const b = document.createElement('button'); b.className = 'tile'; b.type = 'button';
+            b.innerHTML = `<span class="key">${'ABCD'[i]}</span><span>${o}</span><span class="pct">${q.dist[i]}%</span><span class="fill"></span>`;
+            b.addEventListener('click', e => answer(i, e));
+            tiles.appendChild(b);
+          });
+          tLeft = 10; clearInterval(timer); timer = setInterval(stepTimer, 100);
+        }
+        function revealBoard(chosen) {
+          const q = Q[qi];
+          $$('.tile', tiles).forEach((t, j) => {
+            t.disabled = true;
+            t.querySelector('.fill').style.transform = `scaleX(${q.dist[j] / 100})`;
+            t.querySelector('.pct').classList.add('show');
+            if (j === q.c) t.classList.add('correct');
+            else if (j === chosen) t.classList.add('wrong');
+            else t.classList.add('dim');
+          });
+        }
+        const shake = () => { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); };
+        function burst(e) {
+          const r = card.getBoundingClientRect();
+          const x = (e ? e.clientX : r.left + r.width / 2) - r.left,
+            y = (e ? e.clientY : r.top + r.height / 2) - r.top;
+          for (let i = 0; i < 14; i++) {
+            const s = document.createElement('span'); s.className = 'spark';
+            s.style.left = x + 'px'; s.style.top = y + 'px';
+            s.style.background = Math.random() < .5 ? 'var(--accent)' : '#fff';
+            card.appendChild(s);
+            const a = Math.random() * 6.283, v = 30 + Math.random() * 80;
+            s.animate([
+              { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+              { transform: `translate(calc(-50% + ${Math.cos(a) * v}px),calc(-50% + ${Math.sin(a) * v}px)) scale(.2)`, opacity: 0 }
+            ], { duration: 500 + Math.random() * 400, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => s.remove();
+          }
+        }
+        function afterAnswer() {
+          setTimeout(() => {
+            qNext.textContent = qi < Q.length - 1 ? 'Nächste Frage' : 'Ergebnis zeigen';
+            qNext.classList.remove('hidden');
+          }, 800);
+        }
+        function answer(i, e) {
+          if (locked) return; locked = true; clearInterval(timer);
+          const q = Q[qi], ok = i === q.c;
+          revealBoard(i);
+          if (ok) { score++; qFeed.textContent = 'Richtig! Genau so fühlt sich X1 an.'; qFeed.className = 'quiz-feed good'; burst(e); }
+          else { qFeed.textContent = `Falsch — richtig ist „${q.opts[q.c]}".`; qFeed.className = 'quiz-feed bad'; shake(); }
+          afterAnswer();
+        }
+        function timeout() {
+          locked = true; revealBoard(-1);
+          qFeed.textContent = 'Zu langsam! Im Kino zählt jede Sekunde.'; qFeed.className = 'quiz-feed bad'; shake();
+          afterAnswer();
+        }
+        function finish() {
+          quizMain.classList.add('hidden'); quizEnd.classList.remove('hidden');
+          $('#endScore').textContent = `${score} von ${Q.length}`;
+          $('#endMsg').textContent = score === Q.length
+            ? 'Perfekt. Im Kino würde in diesem Moment dein ganzer Saal jubeln.'
+            : score > 0
+              ? 'Solide! Mit etwas schnellerer Hand gehört der Jackpot dir.'
+              : 'Kein Problem — im Kino spielen wir es gemeinsam noch einmal.';
+        }
+        qNext.addEventListener('click', () => { if (qi < Q.length - 1) { qi++; renderQ(); } else finish(); });
+        $('#replay').addEventListener('click', () => {
+          qi = 0; score = 0; quizEnd.classList.add('hidden'); quizMain.classList.remove('hidden'); renderQ();
+        });
+        new IntersectionObserver((es, o) => {
+          if (es[0].isIntersecting && !started) { started = true; renderQ(); o.disconnect(); }
+        }, { threshold: .5 }).observe(card);
+        new IntersectionObserver(es => inView = es[0].isIntersecting, { threshold: .2 }).observe($('#spiel'));
+        addEventListener('keydown', e => {
+          if (inView && !locked && !document.querySelector('.backdrop.open') && ['1', '2', '3', '4'].includes(e.key)) {
+            const t = $$('.tile', tiles)[+e.key - 1]; t && t.click();
+          }
+        });
+      });
+
+      /* ---------- Preis-Counter + Balken ---------- */
+      safe('prize', () => {
+        const sec = $('#preise'); if (!sec) return;
+        let done = false;
+        const countMoney = () => {
+          const el = $('#money'), t0 = performance.now(), target = 1e6;
+          const f = t => {
+            const p = Math.min(1, (t - t0) / 1800), e = 1 - Math.pow(2, -10 * p);
+            el.textContent = Math.round(target * e).toLocaleString('de-DE');
+            if (p < 1) requestAnimationFrame(f); else el.textContent = '1.000.000';
+          };
+          requestAnimationFrame(f);
+        };
+        new IntersectionObserver((es, o) => {
+          if (es[0].isIntersecting && !done) {
+            done = true;
+            reduced ? ($('#money').textContent = '1.000.000') : countMoney();
+            $$('.bar i', sec).forEach((b, i) =>
+              setTimeout(() => b.style.transform = `scaleX(${b.dataset.w})`, 250 + i * 180));
+            o.disconnect();
+          }
+        }, { threshold: .4 }).observe(sec);
+      });
+
+      /* ---------- Modal-System ---------- */
+      safe('modals', () => {
+        const backdrop = $('#backdrop'), modal = $('#modal'), inner = $('#modalInner');
+        if (!backdrop || !modal || !inner) return;
+        let lastFocus = null;
+        function openModal(html, wide = false) {
+          lastFocus = document.activeElement;
+          inner.innerHTML = html; modal.classList.toggle('wide', wide);
+          backdrop.classList.add('open'); document.body.style.overflow = 'hidden';
+          fire('x1:modal', { open: true });
+          $('#modalClose')?.focus();
+        }
+        function closeModal() {
+          backdrop.classList.remove('open'); document.body.style.overflow = '';
+          inner.innerHTML = '';
+          fire('x1:modal', { open: false });
+          lastFocus && lastFocus.focus();
+        }
+        $('#modalClose').addEventListener('click', closeModal);
+        backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+        addEventListener('keydown', e => {
+          if (e.key !== 'Escape') return;
+          if (backdrop.classList.contains('open')) closeModal();
+          else window.__closeMenu?.();
+        });
+
+        /* Trailer-Modal (nutzt VIDEO_FILES.trailer) */
+        $$('.js-trailer').forEach(b => b.addEventListener('click', () => {
+          openModal(`
+      <video id="modalVid" controls autoplay muted playsinline
+             style="width:100%;aspect-ratio:16/9;background:#000;display:block"></video>
+      <div class="trailer-cap">X1 — Offizieller Show-Trailer · Ton über das Lautsprecher-Symbol aktivierbar</div>
+    `, true);
+          const mv = $('#modalVid');
+          mv.src = encodeURI(VIDEO_FILES.trailer || '');
+          mv.addEventListener('error', () => {
+            mv.style.display = 'none';
+            toast('Trailer-Video nicht gefunden — Dateinamen in VIDEO_FILES prüfen.');
+          }, { once: true });
+        }));
+
+        /* Ticket-Alarm mit E-Mail-Validierung */
+        let ticketCity = '';
+        $$('.js-ticket').forEach(b => b.addEventListener('click', e => {
+          e.preventDefault(); window.__closeMenu?.();
+          ticketCity = b.dataset.city;
+          openModal(`
+      <p class="eyebrow l">Ticket-Alarm</p>
+      <h3>${ticketCity || 'X1 Quiz Show'}</h3>
+      <p class="modal-p">${ticketCity
+              ? `Der Vorverkauf für ${ticketCity} startet in Kürze.`
+              : 'Der Vorverkauf startet in Kürze.'}
+       Hinterlasse deine E-Mail und wir informieren dich, sobald Tickets verfügbar sind.</p>
+      <form id="tForm" novalidate>
+        <input type="email" id="tMail" placeholder="deine@email.de" autocomplete="email" aria-label="E-Mail-Adresse">
+        <button class="btn btn-primary" type="submit">Benachrichtigen</button>
+      </form>
+      <p class="form-err" id="tErr" aria-live="polite"></p>
+    `);
+          const inp = $('#tMail');
+          inp.addEventListener('input', () => { inp.classList.remove('err'); $('#tErr').textContent = ''; });
+          inp.focus();
+        }));
+        inner.addEventListener('submit', e => {
+          if (e.target.id !== 'tForm') return;
+          e.preventDefault();
+          const inp = $('#tMail'), v = inp.value.trim();
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+            inp.classList.add('err'); $('#tErr').textContent = 'Bitte gib eine gültige E-Mail-Adresse ein.'; inp.focus(); return;
+          }
+          inner.innerHTML = `
+      <div class="success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+        <h3>Du bist dabei!</h3>
+        <p class="modal-p">Wir erinnern dich, sobald der Vorverkauf für ${ticketCity || 'die nächste X1-Show'} startet.</p>
+      </div>`;
+        });
+
+        /* Footer-Rechtseiten */
+        const LEGAL = {
+          impressum: { t: 'Impressum', p: 'Angaben gemäß § 5 TMG: X1 Live Entertainment GmbH, Musterstraße 12, 10115 Berlin. Vertreten durch die Geschäftsführung. Kontakt: hello@x1-quizshow.de. (Platzhalter — wird im finalen Build mit den echten Daten befüllt.)' },
+          agb: { t: 'AGB', p: 'Die vollständigen Geschäftsbedingungen zum Ticketkauf und zur Teilnahme an X1 werden an dieser Stelle hinterlegt. (Platzhalter für den finalen Build.)' },
+          widerruf: { t: 'Widerrufsrecht', p: 'Verbraucherinnen und Verbraucher haben ein vierzehntägiges Widerrufsrecht für Ticketaufträge. Die vollständige Widerrufsbelehrung folgt im finalen Build.' },
+          ueber: { t: 'Über uns', p: 'X1 ist die erste Live-Quizshow der Welt, bei der das gesamte Kino-Publikum gleichzeitig mitspielt — zehn Fragen, zehn Sekunden, ein Preispool von einer Million Euro pro Show. Entwickelt von Menschen, die große Fernsehmomente lieben. Gespielt in deinem Kino.' },
+          datenschutz: { t: 'Datenschutz', p: 'Hinweise zur Verarbeitung personenbezogener Daten gemäß DSGVO werden an dieser Stelle hinterlegt. (Platzhalter für den finalen Build.)' }
+        };
+        $$('.js-legal').forEach(b => b.addEventListener('click', () => {
+          const o = LEGAL[b.dataset.key]; if (!o) return;
+          openModal(`<p class="eyebrow l">X1 Quiz Show</p><h3>${o.t}</h3><p class="modal-p">${o.p}</p>`);
+        }));
+      });
+
+      /* ---------- Zurück nach oben ---------- */
+      safe('toTop', () => {
+        $('#toTop')?.addEventListener('click', () =>
+          scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
+      });
+
+    })();
+  </script>
+</body>
+
+</html>
